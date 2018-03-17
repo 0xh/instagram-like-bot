@@ -1,0 +1,17 @@
+{
+  "apps": [{
+    "name": "instagram.crawler",
+    "script": "node",
+    "args": "dist/crawler",
+    "ignore_watch": ["node_modules"],
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "autorestart" : false
+  }, {
+    "name": "instagram.spammer",
+    "script": "node",
+    "args": "dist/crawler",
+    "ignore_watch": ["node_modules"],
+    "log_date_format": "YYYY-MM-DD HH:mm Z",
+    "autorestart" : false
+  }]
+}
