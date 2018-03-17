@@ -56,6 +56,13 @@ const spammerProccess = (session, cron) => new Cron({
 })
 
 const spinner = ora('Starting magic party...').start()
+
+try {
+  (() => new CronTime(BOT_SPAM_CRON))()
+} catch (error) {
+  spinner.fail('Invalid cron pattern...') && process.exit(1)
+}
+
 Client.Session.create(device, storage, BOT_IG_USERNAME, BOT_IG_PASSWORD)
   .then((session) => spammerProccess(session, BOT_SPAM_CRON).start())
   .catch((error) => (console.error(error) && process.exit(1)))
