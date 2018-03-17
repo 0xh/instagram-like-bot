@@ -14,19 +14,6 @@ What things you need to install the software and how to install them. Make sure 
 
 **Redis** - Go through [Redis Official](https://redis.io) website and proceed to their [Official Quickstart](https://redis.io/topics/quickstart), which should help you install and understand Redis better.
 
-If you are using OS X you can install Redis using [Homebrew](https://brew.sh).
-
-``` bash
-brew install redis
-brew services start redis
-```
-
-To check wether Redis is up and running you can simple running Redis PING command which should give you PONG result.
-
-``` bash
-redis-cli PING
-```
-
 Additionally, it's highly recomended for you to install these package as a global module.
 
 ```
@@ -85,13 +72,13 @@ Once you've installed all the prerequisites and configure your bot, you're just 
 Run crawler to get liker's ids and save it to Redis. It may takes a while depending on your configuration and hardware resources.
 
 ```
-yarn start src/crawler/index.js
+yarn start src/crawler
 ```
 
 After it done, now you can run the actual instagram like bot.
 
 ```
-yarn start src/spammer/index.js
+yarn start src/spammer
 ```
 
 ### Run using PM2
