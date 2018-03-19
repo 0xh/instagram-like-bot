@@ -8,6 +8,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 > **I DO NOT USE THIS FOR SPAM, HOPE YOU WILL NOT EITHER.**
 
+### How it actually works
+
+Basicly this bot contains two main services. First is crawler, this service will fetch Instagram post Ids and save it to redis. Next services is spammer, this is just a cron which perform like to Instagram post saved in redis one-by-one. In a nutshell, this bot will do these following things :
+
+  - Fetch @instagram post
+  - For each @instagram post, fetch its likers
+  - For each likers, fetch his/her first post
+  - Save all likers' post to redis
+  - For each cron tick, like an instagram post
+  
 ### Prerequisites
 
 What things you need to install the software and how to install them. Make sure you have installed all of the following prerequisites on your development machine:
@@ -17,7 +27,7 @@ What things you need to install the software and how to install them. Make sure 
 Additionally, it's highly recomended for you to install these package as a global module.
 
 ```
-npm install -g standard nodemon pm2 yarn
+$ npm install -g yarn standard nodemon pm2
 ```
 
 ### Installing
@@ -25,17 +35,10 @@ npm install -g standard nodemon pm2 yarn
 A step by step series of examples that tell you have to get a development env running. The easiest way to get started is to clone the repository.
 
 ```
-# Get the latest snapshot
-git clone https://github.com/husnulhamidiah/instagram-like-bot.git instagram-bot
-
-# Change directory
-cd instagram-bot
-
-# Install dependencies
-yarn
-
-# Copy environtment variables file
-cp .env.example .env
+$ git clone https://github.com/husnulhamidiah/instagram-like-bot.git instagram-bot
+$ cd instagram-bot
+$ yarn
+$ cp .env.example .env
 ```
 
 Edit this bot configuration in `.env` file you just copied. This file must have this following keys.
@@ -45,25 +48,25 @@ Edit this bot configuration in `.env` file you just copied. This file must have 
 BOT_IG_USERNAME=
 BOT_IG_PASSWORD=
 
-# Which instagram account to use as a target. This bot will fetch likers from this account.
+# Instagram account as a target
 BOT_TARGET_USERNAME=
 
-# Limit how many post from target should this bot fetch, leave it blank to fetch all post.
+# Target post's limit
 BOT_TARGET_LIMIT=10
 
-# What post should this bot pick from likers. It should be between 1 - 18.
+# Liker's post index
 BOT_TARGET_INDEX=2
 
-# Like interval (in hours) in case you get banned
+# Interval (in hours) if you get banned
 BOT_TARGET_INTERVAL=1
 
-# Limit how many likers do you want to fetch
+# Likers to get limit
 BOT_MEDIA_LIMIT=100
 
-# Cron to run instagram like. It mush be a valid cron pattern
+# Cron to run instagram like
 BOT_SPAM_CRON=* * * * *
 
-# Unique identifier for your instagram session
+# Unique identifier for instagram session
 BOT_DEVICE_PREFIX=
 ```
 
@@ -72,42 +75,30 @@ Once you've installed all the prerequisites and configure your bot, you're just 
 Run crawler to get liker's ids and save it to Redis. It may takes a while depending on your configuration and hardware resources.
 
 ```
-yarn start src/crawler
+$ yarn start src/crawler
 ```
 
 After it done, now you can run the actual instagram like bot.
 
 ```
-yarn start src/spammer
-```
-
-### Run using PM2
-
-In case you need to run this bot as a background service (which I highly recomended), you can use built-in script to run it with [PM2](http://pm2.keymetrics.io/).
-
-```
-yarn pm2-crawler
-```
-
-```
-yarn pm2-spammer
+$ yarn start src/spammer
 ```
 
 ## Frequently Asked Question (FAQ)
 
 #### Why I cannot login
 
-1. There's a typo in your credentials. Double check yours in `.env` file.
+  - There's a typo in your credentials. Double check yours in `.env` file.
 
-2. Instagram detect as an unsual login. This probably happens if you are loged in from a device then you are running this bot on a VPS that has IP originate from different country or even continent from your device. Usually you need to confirm your login on your mobile device.
+  - Instagram detect as an unsual login. This probably happens if you are loged in from a device then you are running this bot on a VPS that has IP originate from different country or even continent from your device. Usually you need to confirm your login on your mobile device.
 
-3. Your device is not unique because somehow Instagram check device that we used to login. If this happens try to change `BOT_DEVICE_PREFIX` value in `.env` file.
+  - Your device is not unique because somehow Instagram check device that we used to login. If this happens try to change `BOT_DEVICE_PREFIX` value in `.env` file.
 
-4. Last but not least, you probably banned permanently by Instagram.
+  - Last but not least, you probably banned permanently by Instagram.
 
 #### Why my account cannot like any post
 
-This probably you hit the Instagram like limit. You have to wait for 24 hours before be able to like again. It will be good if you set your cron with longer interval.
+  - This probably you hit the Instagram like limit. You have to wait for 24 hours before be able to like again. It will be good if you set your cron with longer interval.
 
 
 ## Contribution
