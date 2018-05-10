@@ -36,7 +36,8 @@ const getLikers = async (session, id) => {
 const getLikersMedia = async (session, media, index = 1) => {
   try {
     const likers = await Promise.map(media, (medium) => getLikers(session, medium.id), { concurrency: 5 })
-    const userMedia = await Promise.map(_.compact(_.slice(_.uniq(_.flatten(likers)), 0, BOT_LIKER_LIMIT)), (liker) => getUserMedia(session, liker.id, 1), { concurrency: 5 })
+    const filteredLikers = _.compact(_.slice(_.uniq(_.flatten(likers)), 0, BOT_LIKER_LIMIT))
+    const userMedia = await Promise.map(filteredLikers, (liker) => getUserMedia(session, liker.id, 1), { concurrency: 5 })
     return Promise.resolve(_.compact(userMedia).map(medium => (_.nth(medium, index)) ? _.nth(medium, index).id : undefined))
   } catch (error) {
     return Promise.reject(error)
