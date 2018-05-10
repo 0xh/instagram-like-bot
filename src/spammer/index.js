@@ -12,12 +12,11 @@ dotenv.load()
 Promise.promisifyAll(redis)
 const client = redis.createClient({ db: 2 })
 
-const { BOT_IG_USERNAME, BOT_IG_PASSWORD, BOT_TARGET_USERNAME,
-  BOT_TARGET_INTERVAL, BOT_SPAM_CRON, BOT_GUARD_CRON, BOT_DEVICE_PREFIX } = process.env
+const { BOT_IG_USERNAME, BOT_IG_PASSWORD, BOT_TARGET_INTERVAL,
+  BOT_SPAM_CRON, BOT_GUARD_CRON, REDIS_KEY_PREFIX } = process.env
 const COOKIE_FILE_PATH = path.resolve(__dirname, `../../cookies/${BOT_IG_USERNAME}.json`)
-const REDIS_LIST_KEY = `_LIST__${BOT_IG_USERNAME}_${BOT_TARGET_USERNAME}`
 
-const device = new Client.Device(`${BOT_DEVICE_PREFIX}_${BOT_IG_USERNAME}`)
+const device = new Client.Device(`GOOGLE_PIXEL_PANDA_${BOT_IG_USERNAME}`)
 const storage = new Client.CookieFileStorage(COOKIE_FILE_PATH)
 
 const generateGuard = (ctx, cron) => new Cron({
@@ -34,7 +33,8 @@ const generateGuard = (ctx, cron) => new Cron({
 const generateSpam = (session, cron, interval) => new Cron({
   cronTime: cron,
   onTick: async function () {
-    let userMediaId = await client.lpopAsync(REDIS_LIST_KEY)
+    console.log(REDIS_KEY_PREFIX + BOT_IG_USERNAME)
+    let userMediaId = await client.lpopAsync(REDIS_KEY_PREFIX + BOT_IG_USERNAME)
     if (!userMediaId) return this.stop()
 
     try {
