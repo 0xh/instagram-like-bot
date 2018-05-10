@@ -1,5 +1,3 @@
-'use strict'
-
 import path from 'path'
 import _ from 'lodash'
 import redis from 'redis'
@@ -37,11 +35,12 @@ const getLikersMedia = (session, media, index = 1) =>
     .then((likers) => Promise.resolve(_.uniq(_.flatten(likers))))
     .then((likers) => Promise.map(_.slice(likers, 0, BOT_MEDIA_LIMIT), (liker) =>
       getUserMedia(session, liker.id, 1), { concurrency: 5 }))
-    .then((media) => Promise.resolve(_.compact(media).map(medium => _.nth(medium, index).id)))
+    .then((media) => Promise.resolve(_.compact(media).map(medium =>
+      (_.nth(medium, index)) ? _.nth(medium, index).id : undefined)))
     .catch((error) => console.log(error) && Promise.reject(error))
 
 const storeMediaToRedis = (redisClient, key, media) =>
-  redisClient.rpushAsync.apply(redisClient, [key].concat(media))
+  redisClient.rpushAsync.apply(redisClient, [key].concat(_.compact(media)))
 
 const spinner = ora('Starting magic generator machine...').start()
 Client.Session.create(device, storage, BOT_IG_USERNAME, BOT_IG_PASSWORD)
